@@ -90,7 +90,7 @@ public bool OnClientConnect(int client)
 }
 
 #if defined bTimes
-public OnStyleChanged(client, OldStyle[StyleConfig], NewStyle[StyleConfig], Type)
+public OnStyleChanged(client, OldStyle, NewStyle, Type)
 {
     new buf[StyleConfig];
     Style_GetConfig(GetClientStyle(client), buf);
