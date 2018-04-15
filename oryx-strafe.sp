@@ -226,7 +226,7 @@ public Action OnPlayerRunCmd(client, &buttons, &impulse, float vel_w[3], float a
             g_strafeHistIdx[client] = 0;
         
         #if defined bTimes
-        //this isn't for bash
+        //this block is for allowing usage of +left/right, but in only one direction per jump
         if(buttons & IN_LEFT)
             leftThisJump[client] = true;
         if(buttons & IN_RIGHT)
@@ -246,7 +246,7 @@ public Action OnPlayerRunCmd(client, &buttons, &impulse, float vel_w[3], float a
         g_dirChanged[client] = false;
         
         #if defined bTimes
-        //this isn't for bash
+        //for the above +left/right-related block
         leftThisJump[client] = false;
         rightThisJump[client] = false;
         #endif
@@ -256,7 +256,8 @@ public Action OnPlayerRunCmd(client, &buttons, &impulse, float vel_w[3], float a
     Entity_GetAbsVelocity(client, vel);
     float vel2D = SquareRoot((vel[0] * vel[0]) + (vel[1] * vel[1]));
     
-    /*Perfect TR formatter*/
+    /* Perfect TR formatter */
+    //Above a certain speed, float inaccuracies throw false positives
     if(WithinFlThresh(dtAng, fPrevOptiAng[client], 128.0) && vel2D < 2560.0)
     {
         g_perfAngStreak[client]++;
@@ -271,7 +272,7 @@ public Action OnPlayerRunCmd(client, &buttons, &impulse, float vel_w[3], float a
 
     if(!(buttons & IN_LEFT || buttons & IN_RIGHT))
     {
-        /* +left/right*/
+        /* +left/right bypassing */
         if(WithinFlThresh(dtAng, fPrevDtAng[client], 128.0))
         {
             if(!(GetEntityFlags(client) & FL_ONGROUND))
@@ -283,10 +284,10 @@ public Action OnPlayerRunCmd(client, &buttons, &impulse, float vel_w[3], float a
         }
         else { g_steadyAngStreak[client] = 0; }
         
-        /*Basically +left/right check but on the ground*/
+        /* Basically +left/right check but on the ground */
         if(GetEntityFlags(client) & FL_ONGROUND && WithinFlThresh(dtAng, 1.2, 128.0))
         {
-			//Yes, I know this method is bad.
+            //Yes, I know this method is bad. It's just not high priority.
             g_steadyAngStreakPre[client]++;
             if(g_steadyAngStreakPre[client] > 18)
                 OryxTrigger(client, TRIGGER_MEDIUM, DESC4);
@@ -305,11 +306,16 @@ public Action OnPlayerRunCmd(client, &buttons, &impulse, float vel_w[3], float a
     return Plugin_Continue;
 }
 
+/* Loop through the player list, one player per tick, and check their bash stats.
+ * It is important that you don't check players based on when they strafe, otherwise they
+ * can gerrymander their stats to allow better improvements without more detections aswell
+ */
 public OnGameFrame()
 {
     if(g_bashCheckIdx > MaxClients)
         g_bashCheckIdx = 1;
 
+    //Cooldowns prevent the same stats getting analyzed again after a detection
     if(g_bashTrigCtDown[g_bashCheckIdx])
     {
         g_bashCheckIdx++;
@@ -318,6 +324,7 @@ public OnGameFrame()
     if(IsClientInGame(g_bashCheckIdx) && IsPlayerAlive(g_bashCheckIdx))
     {
         //Use their ground state as a makeshift afk determinant 
+        //No need to check people who aren't playing
         if(g_suffBashData[g_bashCheckIdx] && !(GetEntityFlags(g_bashCheckIdx) & FL_ONGROUND))
         {
             CheckBash(g_bashCheckIdx);
@@ -349,7 +356,7 @@ void CheckBash(int client)
         g_bashTrigCtDown[client] = 35;
     }
 
-    /*Don't trigger twice in one tick*/
+    //Don't trigger twice in one tick
     if(g_bashTrigCtDown[client])
     {
         decl String:str[150];

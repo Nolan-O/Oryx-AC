@@ -7,7 +7,8 @@ This was written for SourceMod v1.7. Few comments are provided because I never p
 # Building
 
 Depends on smlib.  
-All you need to do is make sure you've specified your timer in oryx.inc by defining either `notimer` or `bTimes`. Build each file manually with the sourcemod compiler, like usual.  
+All you need to do is make sure you've specified your timer in oryx.inc by defining either `notimer` or `bTimes`. There is also a [fork by shavit](https://github.com/shavitush/Oryx-AC) for his timer. It will not be merged into this repository due to it also being a complete rewrite. 
+Build each file manually with the sourcemod compiler, like usual.  
 
 # Documentation  
 A lot of this info is found in oryx.inc too.

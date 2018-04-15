@@ -98,7 +98,13 @@ public Action OnPlayerRunCmd(client, &buttons)
     if(g_jumpsFromZone[client] < 2)
         return Plugin_Continue;
     #endif
-	
+
+    /* The pattern we're looking for is when a player goes from pressing a to d,
+     * or vice-versa, without ever holding both and also without ever holding neither.
+     * Any strafes where that is the case will incriment a counter. Any strafes where
+     * both are held will reset the counter; any strafes where neither are held on 1
+     * or more ticks will not effect the counter.
+     */
     if(!(GetEntityFlags(client) & FL_ONGROUND))
     {
         if(!(buttons & IN_MOVELEFT) && buttons & IN_MOVERIGHT) //Holding right, not left
@@ -125,8 +131,8 @@ PerfTransition(int client)
     if(g_perfStrafeCt[client] < 150)
         return;
 
-	//Yes, I'm suspicious about these thresholds too...
-		
+    //Yes, I'm suspicious about these thresholds too...
+
     if(g_perfStrafeCt[client] == 250)
         OryxTrigger(client, TRIGGER_LOW, DESC);
     else if(g_perfStrafeCt[client] == 330)

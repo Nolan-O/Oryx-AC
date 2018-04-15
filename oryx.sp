@@ -133,6 +133,8 @@ public Native_OryxTrigger(Handle plugin, int numParams)
 
 public Native_WithinFlThresh(Handle plugin, int numParams)
 {
+    //The order of these statements is such that it maximizes the performance of this
+    // function, not that too many people would notice either way.
     float f2 = GetNativeCell(2);
     float t = f2 / GetNativeCell(3);
     float f1 = GetNativeCell(1);
