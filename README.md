@@ -28,7 +28,7 @@ TRIGGER_LOW | Like an early warning system. Oryx has probably not found a cheate
 TRIGGER_MEDIUM | Also early warning.  
 TRIGGER_HIGH | Oryx is pretty sure someone is cheating, and this will kick them.  
 TRIGGER_HIGH_NOKICK | Just what it sounds like. High alert, but no automated consequences.  
-TRIGGER_DEFINITIVE | Used by only by oryx-sanity right now. This should be used on non-stat-based detections.
+TRIGGER_DEFINITIVE | Used only by oryx-sanity right now. This should be used on non-stat-based detections.
 TRIGGER_TEST | Allows you to develop new detections on live servers with minimal side effects.
 
 Detection type | Meaning | From
